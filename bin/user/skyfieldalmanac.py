@@ -1028,7 +1028,7 @@ class SkyfieldAlmanacBinder:
                     visible += (change[idx+1][0]-change[idx][0]) * weewx.units.SECS_PER_DAY
         else:
             # Always up or always down
-            alt, _, _ = observer.at(timestamp_to_skyfield_time(0.5*(timespan[0]+timespan[1]))).observe(body).altaz()
+            alt, _, _ = observer.at(timestamp_to_skyfield_time(0.5*(timespan[0]+timespan[1]))).observe(body).apparent().altaz()
             if alt>0:
                 visible = (t1.tai-t0.tai) * weewx.units.SECS_PER_DAY
             else:
