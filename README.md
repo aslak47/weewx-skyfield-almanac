@@ -178,6 +178,12 @@ available if you have special requirements.
   [Ephemerides](#ephemerides) and
   [Planets and their moons: JPL ephemeris files](https://rhodesmill.org/skyfield/planets.html)
   for more details. 
+  The base kernel file is for example  `de440s.bsp`, `de440.bsp`, or `de441.bsp`.
+  This covers the Sun, the Moon, and all the planets. You do not need to
+  specify the full URL of the base kernel, as that is built into Skyfield.
+  An additional file is for example
+  `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/jup365.bsp`
+  which covers some well-known moons of Jupiter.
 * `planetaryconstants`: List of URLs to `.tf`, `.tpc`, and `.bpc` files.
   Optional. Required for reference frames only.
 * `use_builtin_timescale`: Use builtin timescale data or download them

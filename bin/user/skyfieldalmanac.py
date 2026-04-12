@@ -1260,7 +1260,7 @@ class SkyfieldAlmanacBinder:
                         return radius*2.0*RAD2DEG*3600.0 if radius is not None else None
                     # `radius_size`
                     vt = ValueTuple(radius,'radian','group_angle')
-                if attr in {'astro_ra','geo_ra'}:
+                elif attr in {'astro_ra','geo_ra'}:
                     vt = ValueTuple(ra._degrees,'degree_compass','group_direction')
                 elif attr in {'astro_dec','geo_dec'}:
                     vt = ValueTuple(dec.radians,'radian','group_angle')
@@ -1922,6 +1922,11 @@ class SkyfieldMaintenanceThread(threading.Thread):
                             logdbg("thread '%s': registered ephemeris for %s type %s" % (self.name,name.capitalize(),type(_eph[name.lower()])))
                         except (ValueError, LookupError) as e:
                             logerr("thread '%s': %s while trying to get ephemeris for %s: %s" % (self.name,e.__class__.__name__,name.capitalize(),e))
+                # get centers not resolved within this kernel
+                _targets = [_seg.target for _seg in _spk.segments]
+                _centers = [_seg.center for _seg in _spk.segments if _seg.center not in _targets and _seg.center!=0]
+                if len(_centers)>0:
+                    loginf("thread '%s': unresolved centers in %s: %s" % (self.name, _spk.filename, _centers))
                 # get the ephemeris set that covers sun, earth, and moon
                 # required for seasons and moon phase calculation
                 if SUN in _spk and EARTH in _spk and EARTHMOON in _spk:
