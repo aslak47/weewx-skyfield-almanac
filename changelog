@@ -54,3 +54,4 @@
 * fix apparent position in attribute `visible`, thanks to user Vince
 * fix `radius_size` etc.
 * `lunarLibrationLatitude` and `lunarLibrationLongitude` observation types
+* separate documentation file for live LOOP data augmentation
