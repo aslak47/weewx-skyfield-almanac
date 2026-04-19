@@ -3,6 +3,19 @@
 This extension includes a configurable WeeWX service that can add live almanac 
 data to the LOOP packets.
 
+## Contents
+
+* [What is that service for?](#what-is-that-service-for)
+* [Configuration instructions](#configration-instructions)
+* [Observation types](#observation-types)
+* [Add observation types to the WeeWX database](#add-observation-types-to-the-weewx-database)
+* [Usage](#usage)
+  * [Live updates](#live-updates)
+  * [Diagrams](#diagrams)
+  * [Mobile stations](#mobile-stations)
+* [FAQ](#faq)
+* [Links](#links)
+
 ## What is that service for?
 
 Some skins do not only update the web pages once every archive interval but 
@@ -13,7 +26,7 @@ To use them include them in MQTT output.
 ## Configuration instructions
 
 The configuration of the live data service is part of the general
-confiuration of the 
+configuration of the 
 [weewx-skyfield-almanac extension](https://github.com/roe-dl/weewx-skyfield-almanac).
 Here, the specific keys are explained only. For a complete description
 see section 
@@ -80,8 +93,8 @@ Observation types | Value in `live_data_observations` | Second part of the name 
 ------------------|-----------------------------------|-------------------------|----------
 altitude          | `altitude`                        | `Altitude` | `jupiterAltitude`
 azimuth           | `azimuth`                         | `Azimuth` | `saturnAzimuth`
-right ascension   | `right ascension`                 | `RightAscension` | `uranusRightAscension`
-declination       | `declination`                     | `Declination` | `neptuneDeclination`
+topocentric right ascension | `right ascension`       | `RightAscension` | `uranusRightAscension`
+topocentric declination     | `declination`           | `Declination` | `neptuneDeclination`
 libration latitude | `libration`                      | `LibrationLatitude` | `lunarLibrationLatitude`
 libration longitude | `libration`                     | `LibrationLongitude` | `lunarLibrationLongitude`
 
@@ -119,8 +132,10 @@ weectl database add-column solarAltitude
 ### Live updates
 
 If you want to see some almanac values change every some seconds, first,
-include them in MQTT output. Please, refer to the MQTT extension for
-how to do that. 
+include them in MQTT output. Please, refer to the MQTT extension of your
+choice for how to do that:
+* [weewx-mqtt by Matthew Wall](https://github.com/matthewwall/weewx-mqtt)
+* [mqtt publish by Rich Bell](https://github.com/weewx-mqtt/publish)
 
 Alternatives to MQTT output are 
 [SQL database upload](https://github.com/roe-dl/weewx-sqlupload)
@@ -137,12 +152,40 @@ respective observation types to the database as described above. Then
 configure your skin to show those values in a diagram. Please refer
 to the skin documentation for how to do that.
 
+### Mobile stations
+
+For mobile stations the location is updated from `latitude` and `longitude` 
+observation types if they are present in the LOOP packet.
+
+## FAQ
+
+Q: What is the difference between `solarAzimuth`, `solarAltitude` and
+`$almanac.sun.az` (`$almanac.sun.azimuth`), `$almanac.sun.alt`
+(`$almanac.sun.azimuth`), respectively?
+
+A: The difference is the use case:
+* `solarAzimuth` and `solarAltitude` are included in LOOP packets and output to MQTT and thus allow live updates on web sites.
+* As `solarAzimuth` and `solarAltitude` are observation types, they can be saved to the database and then displayed in diagrams.
+* On the other side, `$almanac.sun.az` etc. can have parameters to adjust the output.
+
+Q: Why I cannot setup altitude and azimuth separately?
+
+A: Because the Skyfield module always calculates them together.
+
+Q: Why I cannot setup right ascension and declination separately?
+
+A: Because the Skyfield module always calculates them together.
+
 ## Links
 
 * [weewx-skyfield-almanac extension](https://github.com/roe-dl/weewx-skyfield-almanac)
 * [WeeWX](https://weewx.com)
 * [Skyfield](https://rhodesmill.org/skyfield/)
 * [WeeWX sky map extension](https://github.com/roe-dl/weewx-skymap-almanac)
+* [weewx-mqtt by Matthew Wall](https://github.com/matthewwall/weewx-mqtt)
+* [mqtt publish by Rich Bell](https://github.com/weewx-mqtt/publish)
+* [SQL database upload](https://github.com/roe-dl/weewx-sqlupload)
+* [JSON LOOP data output](https://github.com/chaunceygardiner/weewx-loopdata)
 * [weewx-celestial](https://github.com/chaunceygardiner/weewx-celestial)
   (I did not notice that extension while working on the Skyfield based
   almanac extension for WeeWX. However, both extensions have different
