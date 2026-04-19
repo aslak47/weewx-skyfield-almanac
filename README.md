@@ -918,6 +918,11 @@ if the list contains `mars_barycenter`, this time with the prefix `mars`.
 For the Moon, `lunarTime` is additionally available, which is the actual
 hour angle of the Moon. According to the traditions of WeeWX it is expressed
 in degrees rather than in hours.
+Furthermore, if you include `libration` into `live_data_observations`
+and `moon` into `live_data_bodies`, the observation types
+`lunarLibrationLatitude` and `lunarLibrationLongitude` are 
+additionally available.
+
 
 If you want to save those values to the database, you have to add columns
 using the 

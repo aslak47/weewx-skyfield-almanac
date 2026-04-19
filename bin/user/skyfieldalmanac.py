@@ -2305,6 +2305,7 @@ class LiveService(StdService):
         if not isinstance(obs,(list,tuple)): obs = [obs]
         self.with_altaz = 'altitude' in obs or 'azimuth' in obs
         self.with_radec = 'declination' in obs or 'right ascension' in obs
+        self.with_libration = 'libration' in obs
         # additional heavenly bodies
         bodies = alm_conf_dict.get('live_data_bodies',[])
         if not isinstance(bodies,(list,tuple)): bodies = [bodies]
@@ -2346,6 +2347,9 @@ class LiveService(StdService):
             weewx.units.obs_group_dict.setdefault('%sAzimuth' % prefix,'group_direction')
             weewx.units.obs_group_dict.setdefault('%sRightAscension' % prefix,'group_direction')
             weewx.units.obs_group_dict.setdefault('%sDeclination' % prefix,'group_angle')
+        if self.with_libration:
+            weewx.units.obs_group_dict.setdefault('lunarLibrationLatitude','group_angle')
+            weewx.units.obs_group_dict.setdefault('lunarLibrationLongitude','group_direction')
         # instance variables
         self.last_archive_outTemp = None # degree_C
         self.last_archive_pressure = None # mbar
@@ -2493,6 +2497,12 @@ class LiveService(StdService):
                 if body.lower()==EARTHMOON:
                     ha, _, _ = position.hadec()
                     packet['%sTime' % prefix] = weewx.units.convertStd(ValueTuple(ha._degrees+180.0,'degree_compass','group_direction'),usUnits)[0]
+                    # Moon libration
+                    if self.with_libration:
+                        p = (observer-eph).at(ti)
+                        lat, lon, dist = p.frame_latlon(frames[body.lower()])
+                        packet['lunarLibrationLatitude'] = weewx.units.convertStd(ValueTuple(lat.radians,'radian','group_angle'),usUnits)[0]
+                        packet['lunarLibrationLongitude'] = weewx.units.convertStd(ValueTuple((lon.degrees+180.0)%360.0-180.0,'degree_compass','group_direction'),usUnits)[0]
         except (LookupError,ArithmeticError,AttributeError,TypeError,ValueError) as e:
             # report the error at most once every 5 minutes
             if self.log_failure and time.time()>=self.last_almanac_error+300:

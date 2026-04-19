@@ -52,3 +52,5 @@
 * change name to code mapping during initialization
 * process radii of heavenly bodies in PCK files
 * fix apparent position in attribute `visible`, thanks to user Vince
+* fix `radius_size` etc.
+* `lunarLibrationLatitude` and `lunarLibrationLongitude` observation types
