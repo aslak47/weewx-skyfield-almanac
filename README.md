@@ -204,8 +204,8 @@ available if you have special requirements.
 * `enable_live_data`: enable live data for fast changing almanac values
   (default: on)
 * `live_data_observations`: list of observation types to calculate live
-  data for. Optional. Default is altitude and azimuth. Possible additional
-  values are `declination` and `right ascension`.
+  data for. Optional. Default is altitude, azimuth, and distance. Possible 
+  additional values are `declination`, `right ascension`, and `libration`.
 * `live_data_bodies`: list of additional heavenly bodies to include in live 
   data (e.g. LOOP packets). Optional. The Sun is always included.
 * `disable_pyephem`: disable the built-in PyEphem almanac 

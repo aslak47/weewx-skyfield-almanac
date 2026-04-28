@@ -9,11 +9,11 @@ data to the LOOP packets.
 * [Configuration instructions](#configration-instructions)
 * [Observation types](#observation-types)
 * [Add observation types to the WeeWX database](#add-observation-types-to-the-weewx-database)
+* [Units](#units)
 * [Usage](#usage)
   * [Live updates](#live-updates)
   * [Diagrams](#diagrams)
   * [Mobile stations](#mobile-stations)
-* [Units](#units)
 * [FAQ](#faq)
 * [Links](#links)
 
@@ -50,16 +50,18 @@ in the README file.
 ```
 
 * `enable_live_data`: enable live data service for fast changing almanac values (default: on)
-* `live_data_observations`: list of observation types to calculate live data for. Optional. Default is altitude and azimuth. Possible additional values are declination and right ascension.
+* `live_data_observations`: list of observation types to calculate live data for. Optional. Default is
+  altitude, azimuth, and distance. Possible additional values are
+  `declination`, `right ascension`, and `libration`.
 * `live_data_bodies`: list of additional heavenly bodies to include in live data (e.g. LOOP packets). Optional. The Sun is always included.
 
 Possible values in `live_data_observations`:
 * `altitude`, `azimuth`: If one of them is included in the list, calculate
-  altitude and azimuth of the Sun and all the heavenly bodies listed in
-  `live_data_bodies`
+  altitude, azimuth, and distance of the Sun and all the heavenly bodies 
+  listed in `live_data_bodies`
 * `right ascension`, `declination`: If one of them is included in the list,
-   calculate right ascension and declination of the Sun and all the heavenly
-   bodies listed in `live_data_bodies`
+  calculate right ascension, declination, and distance of the Sun and all 
+  the heavenly bodies listed in `live_data_bodies`
 * `libration`: If that is included in the list and additionally `moon` is
   included in the list of `live_data_bodies` then calculate the libration
   of the Moon
@@ -129,6 +131,26 @@ source ~/weewx-venv/bin/activate
 weectl database add-column solarAltitude
 ```
 
+## Units
+
+Every observation type in WeeWX belongs to a unit group. Depending on the
+chosen unit system the unit group in turn is connected to a specific unit,
+which is used for output, if the user does not specify otherwise. See the 
+manual of the respective uploader or skin for how to select the unit 
+system and the unit.
+
+The following unit groups are used for LOOP data output:
+
+Observation types | Unit group | Typical units
+------------------|------------|---------------
+azimuth, right ascension, longitude, time | `group_direction` | `degree_compass`
+altitude, declination, latitude | `group_angle` | `degree_angle`, `radian`
+distance | `group_distance` | `km`, `mile`, `light_year`, `AU`, `gigameter`
+`solarPath` | `group_percent` | `percent`
+
+See section [Units](https://github.com/roe-dl/weewx-skyfield-almanac#units)
+in the readme file for more details.
+
 ## Usage
 
 ### Live updates
@@ -158,26 +180,6 @@ to the skin documentation for how to do that.
 
 For mobile stations the location is updated from `latitude` and `longitude` 
 observation types if they are present in the LOOP packet.
-
-## Units
-
-Every observation type in WeeWX belongs to a unit group. Depending on the
-chosen unit system the unit group in turn is connected to a specific unit,
-which is used for output, if the user does not specify otherwise. See the 
-manual of the respective uploader or skin for how to select the unit 
-system and the unit.
-
-The following unit groups are used for LOOP data output:
-
-Observation types | Unit group | Typical units
-------------------|------------|---------------
-azimuth, right ascension, longitude, time | `group_direction` | `degree_compass`
-altitude, declination, latitude | `group_angle` | `degree_angle`, `radian`
-distance | `group_distance` | `km`, `mile`, `light_year`, `AU`, `gigameter`
-`solarPath` | `group_percent` | `percent`
-
-See section [Units](https://github.com/roe-dl/weewx-skyfield-almanac#units)
-in the readme file for more details.
 
 ## FAQ
 
