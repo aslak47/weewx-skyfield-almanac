@@ -13,6 +13,7 @@ data to the LOOP packets.
   * [Live updates](#live-updates)
   * [Diagrams](#diagrams)
   * [Mobile stations](#mobile-stations)
+* [Units](#units)
 * [FAQ](#faq)
 * [Links](#links)
 
@@ -41,8 +42,8 @@ in the README file.
         # enable LOOP packet augmentation
         enable_live_data = true
         # which observation types to calculate live data for
-        live_data_obersvations = altitude, azimuth
-        # optional list of additional hevanly bodies
+        live_data_observations = altitude, azimuth
+        # optional list of additional heavenly bodies
         live_data_bodies = 
         # further general options including sub-sections
         ...
@@ -95,6 +96,7 @@ altitude          | `altitude`                        | `Altitude` | `jupiterAlt
 azimuth           | `azimuth`                         | `Azimuth` | `saturnAzimuth`
 topocentric right ascension | `right ascension`       | `RightAscension` | `uranusRightAscension`
 topocentric declination     | `declination`           | `Declination` | `neptuneDeclination`
+topocentric distance        | one of the above        | `Distance` | `plutoDistance`
 libration latitude | `libration`                      | `LibrationLatitude` | `lunarLibrationLatitude`
 libration longitude | `libration`                     | `LibrationLongitude` | `lunarLibrationLongitude`
 
@@ -156,6 +158,26 @@ to the skin documentation for how to do that.
 
 For mobile stations the location is updated from `latitude` and `longitude` 
 observation types if they are present in the LOOP packet.
+
+## Units
+
+Every observation type in WeeWX belongs to a unit group. Depending on the
+chosen unit system the unit group in turn is connected to a specific unit,
+which is used for output, if the user does not specify otherwise. See the 
+manual of the respective uploader or skin for how to select the unit 
+system and the unit.
+
+The following unit groups are used for LOOP data output:
+
+Observation types | Unit group | Typical units
+------------------|------------|---------------
+azimuth, right ascension, longitude, time | `group_direction` | `degree_compass`
+altitude, declination, latitude | `group_angle` | `degree_angle`, `radian`
+distance | `group_distance` | `km`, `mile`, `light_year`, `AU`, `gigameter`
+`solarPath` | `group_percent` | `percent`
+
+See section [Units](https://github.com/roe-dl/weewx-skyfield-almanac#units)
+in the readme file for more details.
 
 ## FAQ
 

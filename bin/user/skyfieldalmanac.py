@@ -2341,12 +2341,14 @@ class LiveService(StdService):
         weewx.units.obs_group_dict.setdefault('solarPath','group_percent')
         weewx.units.obs_group_dict.setdefault('solarRightAscension','group_direction')
         weewx.units.obs_group_dict.setdefault('solarDeclination','group_angle')
+        weewx.units.obs_group_dict.setdefault('solarDistance','group_distance')
         weewx.units.obs_group_dict.setdefault('lunarTime','group_direction')
         for _, prefix in self.additional_bodies:
             weewx.units.obs_group_dict.setdefault('%sAltitude' % prefix,'group_angle')
             weewx.units.obs_group_dict.setdefault('%sAzimuth' % prefix,'group_direction')
             weewx.units.obs_group_dict.setdefault('%sRightAscension' % prefix,'group_direction')
             weewx.units.obs_group_dict.setdefault('%sDeclination' % prefix,'group_angle')
+            weewx.units.obs_group_dict.setdefault('%sDistance' % prefix,'group_distance')
         if self.with_libration:
             weewx.units.obs_group_dict.setdefault('lunarLibrationLatitude','group_angle')
             weewx.units.obs_group_dict.setdefault('lunarLibrationLongitude','group_direction')
@@ -2422,9 +2424,10 @@ class LiveService(StdService):
             # apparent position of the Sun in respect to the observer's location
             position = observer.at(ti).observe(sun).apparent()
             # solar altitude and azimuth
-            alt, az, _ = position.altaz(temperature_C=self.last_archive_outTemp,pressure_mbar=self.last_archive_pressure if self.last_archive_pressure else 'standard')
+            alt, az, dist = position.altaz(temperature_C=self.last_archive_outTemp,pressure_mbar=self.last_archive_pressure if self.last_archive_pressure else 'standard')
             packet['solarAzimuth'] = weewx.units.convertStd(ValueTuple(az.degrees,'degree_compass','group_direction'),usUnits)[0]
             packet['solarAltitude'] = weewx.units.convertStd(ValueTuple(alt.radians,'radian','group_angle'),usUnits)[0]
+            packet['solarDistance'] = weewx.units.convertStd(ValueTuple(dist.km,'km','group_distance'),usUnits)[0]
             # solar time (hour angle)
             ha, _, _ = position.hadec()
             packet['solarTime'] = weewx.units.convertStd(ValueTuple(ha._degrees+180.0,'degree_compass','group_direction'),usUnits)[0]
@@ -2485,14 +2488,16 @@ class LiveService(StdService):
                 position = observer.at(ti).observe(eph).apparent()
                 # the body's altitude and azimuth
                 if self.with_altaz:
-                    alt, az, _ = position.altaz(temperature_C=self.last_archive_outTemp,pressure_mbar=self.last_archive_pressure if self.last_archive_pressure else 'standard')
+                    alt, az, dist = position.altaz(temperature_C=self.last_archive_outTemp,pressure_mbar=self.last_archive_pressure if self.last_archive_pressure else 'standard')
                     packet['%sAzimuth' % prefix] = weewx.units.convertStd(ValueTuple(az.degrees,'degree_compass','group_direction'),usUnits)[0]
                     packet['%sAltitude' % prefix] = weewx.units.convertStd(ValueTuple(alt.radians,'radian','group_angle'),usUnits)[0]
+                    packet['%sDistance' % prefix] = weewx.units.convertStd(ValueTuple(dist.km,'km','group_distance'),usUnits)[0]
                 # the body's right ascension and declination
                 if self.with_radec:
-                    ra, dec, _ = position.radec('date')
+                    ra, dec, dist = position.radec('date')
                     packet['%sRightAscension' % prefix] = weewx.units.convertStd(ValueTuple(ra._degrees,'degree_compass','group_direction'),usUnits)[0]
                     packet['%sDeclination' % prefix] = weewx.units.convertStd(ValueTuple(dec.radians,'radian','group_angle'),usUnits)[0]
+                    packet.setdefault('%sDistance' % prefix,weewx.units.convertStd(ValueTuple(dist.km,'km','group_distance'),usUnits)[0])
                 # moon hour angle
                 if body.lower()==EARTHMOON:
                     ha, _, _ = position.hadec()

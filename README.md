@@ -882,6 +882,7 @@ include them in MQTT output. To activate live data, set the
 
 * `solarAltitude`: current altitude of the Sun
 * `solarAzimuth`: current azimuth of the Sun
+* `solarDistance`: current distance to the Sun
 * `solarTime`: current hour angle of the Sun, counted from midnight
   (that is sundial time)
 * `solarPath`: current percentage of the way of the Sun from sunrise
@@ -913,7 +914,8 @@ observation types if they are present in the LOOP packet.
 If you set `live_data_bodies` to a list of heavenly bodies, then their
 values are calculated, too. For example, if that
 list contains `moon`, the observation types `lunarAzimuth`, `lunarAltitude`,
-`lunarRightAscension`, and `lunarDeclination` are available. The same applies
+`lunarRightAscension`, `lunarDeclination`, and `lunarDistance` are available. 
+The same applies
 if the list contains `mars_barycenter`, this time with the prefix `mars`.
 For the Moon, `lunarTime` is additionally available, which is the actual
 hour angle of the Moon. According to the traditions of WeeWX it is expressed
